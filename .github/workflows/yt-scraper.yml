@@ -2,7 +2,7 @@ name: YouTube Scraper Job
 
 on:
   schedule:
-    - cron: '0 */5 * * *'  # Berjalan setiap 5 jam secara automatik
+    - cron: '0 */5 * * *'
   workflow_dispatch:
 
 jobs:
@@ -15,11 +15,16 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.10'
+          python-version: '3.11'
+
+      - name: Set up Node.js (Required for YouTube extraction)
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
 
       - name: Install dependencies
         run: |
-          pip install requests yt-dlp
+          pip install --upgrade requests yt-dlp
 
       - name: Run YouTube Scraper
         env:

@@ -37,13 +37,13 @@ def get_manifest(url, retries=2):
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
-        # Format js_runtimes yang betul yang dikehendaki oleh yt-dlp
         'js_runtimes': {
             'node': {}
         },
+        # Menggunakan klien mobile web untuk mengelakkan sekatan bot IP pusat data
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'web']
+                'player_client': ['mweb', 'android']
             }
         }
     }

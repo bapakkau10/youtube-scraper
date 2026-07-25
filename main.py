@@ -1,6 +1,5 @@
 import os
 import requests
-import shutil
 from datetime import datetime
 import yt_dlp
 
@@ -35,22 +34,19 @@ def log(message):
         f.write(line + "\n")
 
 def get_manifest(url, retries=2):
-    # Cari laluan node secara automatik dalam sistem runner
-    node_path = shutil.which("node")
-    
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
+        # Format js_runtimes yang betul yang dikehendaki oleh yt-dlp
+        'js_runtimes': {
+            'node': {}
+        },
         'extractor_args': {
             'youtube': {
                 'player_client': ['android', 'web']
             }
         }
     }
-    
-    # Jika node dijumpai, paksa yt-dlp gunakannya
-    if node_path:
-        ydl_opts['js_runtimes'] = {'node': node_path}
 
     for attempt in range(retries):
         try:

@@ -24,6 +24,7 @@ jobs:
 
       - name: Install dependencies
         run: |
+          pip install --upgrade pip
           pip install --upgrade requests yt-dlp
 
       - name: Create cookies file

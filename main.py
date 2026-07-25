@@ -41,7 +41,6 @@ def get_manifest(url, retries=2):
         'js_runtimes': {
             'node': {}
         },
-        # Menggunakan format 'best' untuk memastikan live stream dapat dikesan
         'format': 'best',
     }
 
@@ -49,7 +48,6 @@ def get_manifest(url, retries=2):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
-                # Ambil url terus atau manifest_url sekiranya ada
                 manifest = info.get('url') or info.get('manifest_url')
                 if manifest:
                     return manifest

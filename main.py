@@ -36,8 +36,13 @@ def log(message):
 def setup_cookies():
     cookies_content = os.environ.get("YOUTUBE_COOKIES")
     if cookies_content:
+        # Bersihkan format jika ada tanda petunjuk berlebihan
+        cookies_content = cookies_content.strip()
         with open("cookies.txt", "w", encoding="utf-8") as f:
             f.write(cookies_content)
+        log("cookies.txt successfully created from environment variable.")
+    else:
+        log("WARNING: YOUTUBE_COOKIES environment variable is empty!")
 
 def get_manifest(url, retries=2):
     ydl_opts = {
@@ -101,11 +106,9 @@ def scraper_loop():
         time.sleep(300)
 
 if __name__ == "__main__":
-    # Jalankan scraper di background
     t = threading.Thread(target=scraper_loop)
     t.daemon = True
     t.start()
     
-    # Jalankan pelayan web Flask untuk Render
     port = int(os.environ.get("PORT", 10000))
     app.run(host="0.0.0.0", port=port)

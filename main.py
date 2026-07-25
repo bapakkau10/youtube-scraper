@@ -37,10 +37,10 @@ def get_manifest(url, retries=2):
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
+        'cookiefile': 'cookies.txt',  # Menggunakan cookies akaun peribadi
         'js_runtimes': {
             'node': {}
         },
-        # Menggunakan klien ios, mweb, dan android untuk memintas sekatan bot pusat data
         'extractor_args': {
             'youtube': {
                 'player_client': ['ios', 'mweb', 'android']

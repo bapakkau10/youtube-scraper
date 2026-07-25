@@ -40,7 +40,6 @@ def get_manifest(url, retries=2):
         'js_runtimes': {
             'node': {}
         },
-        # Menggunakan klien mobile web untuk mengelakkan sekatan bot IP pusat data
         'extractor_args': {
             'youtube': {
                 'player_client': ['mweb', 'android']

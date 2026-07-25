@@ -29,7 +29,9 @@ jobs:
 
       - name: Create cookies file
         run: |
-          echo "${{ secrets.YOUTUBE_COOKIES }}" > cookies.txt
+          cat << 'EOF' > cookies.txt
+          ${{ secrets.YOUTUBE_COOKIES }}
+          EOF
 
       - name: Run YouTube Scraper
         env:

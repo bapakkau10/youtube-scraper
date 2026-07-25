@@ -36,7 +36,6 @@ def log(message):
 def setup_cookies():
     cookies_content = os.environ.get("YOUTUBE_COOKIES")
     if cookies_content:
-        # Bersihkan format jika ada tanda petunjuk berlebihan
         cookies_content = cookies_content.strip()
         with open("cookies.txt", "w", encoding="utf-8") as f:
             f.write(cookies_content)
@@ -51,7 +50,7 @@ def get_manifest(url, retries=2):
         'cookiefile': 'cookies.txt',
         'extractor_args': {
             'youtube': {
-                'player_client': ['android', 'web']
+                'player_client': ['tv', 'mweb', 'android']
             }
         }
     }

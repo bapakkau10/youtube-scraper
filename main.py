@@ -37,17 +37,20 @@ def get_manifest(url, retries=2):
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
-        'cookiefile': 'cookies.txt',  # Menggunakan cookies pelayar web
+        'cookiefile': 'cookies.txt',
         'js_runtimes': {
             'node': {}
-        }
+        },
+        # Menggunakan format 'best' untuk memastikan live stream dapat dikesan
+        'format': 'best',
     }
 
     for attempt in range(retries):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
                 info = ydl.extract_info(url, download=False)
-                manifest = info.get('manifest_url') or info.get('url')
+                # Ambil url terus atau manifest_url sekiranya ada
+                manifest = info.get('url') or info.get('manifest_url')
                 if manifest:
                     return manifest
         except Exception as e:

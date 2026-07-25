@@ -41,7 +41,15 @@ def get_manifest(url, retries=2):
         'js_runtimes': {
             'node': {}
         },
-        'format': 'best',
+        # Menggunakan klien web dan User-Agent pelayar desktop untuk sepadan dengan cookies
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['web']
+            }
+        },
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36'
+        }
     }
 
     for attempt in range(retries):

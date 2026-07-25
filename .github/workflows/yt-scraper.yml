@@ -1,0 +1,29 @@
+name: YouTube Scraper Job
+
+on:
+  schedule:
+    - cron: '0 */5 * * *'  # Berjalan setiap 5 jam secara automatik
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install requests yt-dlp
+
+      - name: Run YouTube Scraper
+        env:
+          CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
+          CF_NAMESPACE_ID: ${{ secrets.CF_NAMESPACE_ID }}
+          CF_API_TOKEN: ${{ secrets.CF_API_TOKEN }}
+        run: python main.py

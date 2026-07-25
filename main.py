@@ -37,14 +37,9 @@ def get_manifest(url, retries=2):
     ydl_opts = {
         'quiet': True,
         'no_warnings': True,
-        'cookiefile': 'cookies.txt',  # Menggunakan cookies akaun peribadi
+        'cookiefile': 'cookies.txt',  # Menggunakan cookies pelayar web
         'js_runtimes': {
             'node': {}
-        },
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['ios', 'mweb', 'android']
-            }
         }
     }
 

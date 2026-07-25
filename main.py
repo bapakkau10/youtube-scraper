@@ -40,9 +40,10 @@ def get_manifest(url, retries=2):
         'js_runtimes': {
             'node': {}
         },
+        # Menggunakan klien ios, mweb, dan android untuk memintas sekatan bot pusat data
         'extractor_args': {
             'youtube': {
-                'player_client': ['mweb', 'android']
+                'player_client': ['ios', 'mweb', 'android']
             }
         }
     }

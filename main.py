@@ -1,10 +1,16 @@
 import os
 import time
+import threading
 import requests
 from datetime import datetime
 import yt_dlp
+from flask import Flask
 
-# ================= CONFIG =================
+app = Flask(__name__)
+
+@app.route('/')
+def home():
+    return "YouTube Scraper is running!"
 
 CHANNELS = {
     "makkah_live": "https://www.youtube.com/watch?v=cvjtLTv5FLU",
@@ -23,14 +29,9 @@ CF_ACCOUNT_ID = os.environ.get("CF_ACCOUNT_ID")
 CF_NAMESPACE_ID = os.environ.get("CF_NAMESPACE_ID")
 CF_API_TOKEN = os.environ.get("CF_API_TOKEN")
 
-LOG_FILE = "update_log.txt"
-
-# ===========================================
-
 def log(message):
     timestamp = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-    line = f"[{timestamp}] {message}"
-    print(line)
+    print(f"[{timestamp}] {message}")
 
 def setup_cookies():
     cookies_content = os.environ.get("YOUTUBE_COOKIES")
@@ -43,11 +44,12 @@ def get_manifest(url, retries=2):
         'quiet': True,
         'no_warnings': True,
         'cookiefile': 'cookies.txt',
-        'js_runtimes': {
-            'node': {}
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web']
+            }
         }
     }
-
     for attempt in range(retries):
         try:
             with yt_dlp.YoutubeDL(ydl_opts) as ydl:
@@ -61,9 +63,7 @@ def get_manifest(url, retries=2):
 
 def get_current_value(key):
     url = f"https://api.cloudflare.com/client/v4/accounts/{CF_ACCOUNT_ID}/storage/kv/namespaces/{CF_NAMESPACE_ID}/values/{key}"
-    headers = {
-        "Authorization": f"Bearer {CF_API_TOKEN}"
-    }
+    headers = {"Authorization": f"Bearer {CF_API_TOKEN}"}
     response = requests.get(url, headers=headers)
     if response.status_code == 200:
         return response.text
@@ -81,27 +81,31 @@ def update_kv(key, manifest_url):
     else:
         log(f"{key} update failed: {response.text}")
 
-# ================= MAIN ====================
-
-if __name__ == "__main__":
+def scraper_loop():
     setup_cookies()
+    time.sleep(5)
     while True:
         log("===== START UPDATE CYCLE =====")
-
         for key, youtube_url in CHANNELS.items():
             log(f"Checking {key}...")
             manifest = get_manifest(youtube_url)
-
             if not manifest:
                 log(f"{key} FAILED extraction.")
                 continue
-
             current_value = get_current_value(key)
-
             if current_value == manifest:
                 log(f"{key} unchanged. Skipping write.")
             else:
                 update_kv(key, manifest)
-
         log("===== END UPDATE CYCLE =====\n")
-        time.sleep(300) # Tunggu 5 minit sebelum pusingan seterusnya
+        time.sleep(300)
+
+if __name__ == "__main__":
+    # Jalankan scraper di background
+    t = threading.Thread(target=scraper_loop)
+    t.daemon = True
+    t.start()
+    
+    # Jalankan pelayan web Flask untuk Render
+    port = int(os.environ.get("PORT", 10000))
+    app.run(host="0.0.0.0", port=port)

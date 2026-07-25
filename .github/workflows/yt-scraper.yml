@@ -26,6 +26,10 @@ jobs:
         run: |
           pip install --upgrade requests yt-dlp
 
+      - name: Create cookies file
+        run: |
+          echo "${{ secrets.YOUTUBE_COOKIES }}" > cookies.txt
+
       - name: Run YouTube Scraper
         env:
           CF_ACCOUNT_ID: ${{ secrets.CF_ACCOUNT_ID }}
